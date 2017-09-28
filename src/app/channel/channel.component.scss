@@ -1,0 +1,23 @@
+.channel-form-container {
+    margin: 0 auto;
+    width: 600px;
+    padding: 25px;
+}
+
+button + button {
+    margin-right: 10px;
+}
+
+.cancel-button {
+    background: #fff;
+    border: 1px solid grey;
+}
+
+button[disabled] {
+    background: grey;
+    border-color: grey;
+    &:hover {
+        background: grey;
+        border-color: grey;
+    }
+}

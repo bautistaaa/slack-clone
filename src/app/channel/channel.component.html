@@ -1,0 +1,32 @@
+<div class="channel-form-container">
+    
+  <h3>Create a channel</h3>
+
+  <div class="form-group">
+
+    <label class="center-block">Name:
+          <input class="form-control" 
+                  [formControl]="name" 
+                  required>
+          </label>
+
+    <div class="text-danger" *ngIf="name.hasError('required') && name.touched">
+      Name is required
+    </div>
+
+  </div>
+
+  <button class="btn btn-success pull-right" 
+          (click)="onCreateChannelButtonClick()"
+          [disabled]="name.hasError('required')">
+    Create Channel
+  </button>
+
+  <button class="btn cancel-button pull-right"
+          (click)="onCancelButtonClick()">
+    Cancel
+  </button>
+
+
+
+</div>

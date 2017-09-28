@@ -1,0 +1,79 @@
+.chatroom {
+    margin-left: 200px;
+    padding: 10px 10px 20px;
+    height: 100%;
+    position: relative;
+    min-height: 100vh;
+}
+
+.logout-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+hr {
+    border-top: 1px solid lightgrey;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.messages {
+    list-style: none;
+    padding: 0;
+    .message {
+        margin: 10px 0;
+    }
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: pink;
+    border: 1px solid grey;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.message-metadata {
+    padding-left: 3px;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    vertical-align: top;
+    max-width: 90%;
+
+    .user-name {
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .timestamp {
+        font-size: 0.8em;
+        color: grey;
+    }
+
+    .text {
+        word-break: break-word;
+    }
+}
+
+.message-input-container {
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    padding-right: 15px;
+    input {
+        border-radius: 5px;
+        border: 2px solid rgba(128, 128, 128, 0.5);
+        height: 40px;
+        padding: 5px;
+        width: 100%;
+        margin: 0;
+        &:focus {
+            outline: 0;
+            border: 2px solid rgb(128, 128, 128);
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<div class="chatroom">
+
+  <h4>#Chatroom Title</h4>
+  <button class="logout-button"
+          (click)="onLogoutButtonClick()">Logout</button>
+  <hr>
+
+  <ul class="messages">
+
+    <li class="message" *ngFor="let message of messages | async">
+
+      <span class="avatar"></span>
+
+      <div class="message-metadata">
+        <span class="user-name">
+          Chris Bautista
+        </span>
+        <span class="timestamp">
+            {{ message.timestamp | date:'medium' }}
+        </span>
+        <div class="text">
+          {{ message.message }}
+        </div>
+      </div>
+
+    </li>
+
+  </ul>
+
+  <div class="message-input-container">
+    <input type="text" #message
+           placeholder="Message #channel"
+           (keyup.enter)="onAddMessage(message.value); message.value = '';"/>
+  </div>
+</div>

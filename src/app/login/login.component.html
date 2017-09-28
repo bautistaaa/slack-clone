@@ -1,0 +1,94 @@
+<div class="center-block form-container">
+
+  <h3 *ngIf="!isNewUser" class="text-center">Please sign in below</h3>
+  <h3 *ngIf="isNewUser" class="text-center">Please create an account below</h3>
+  
+  <form *ngIf="!isNewUser"
+        [formGroup]="loginForm" 
+        (ngSubmit)="onLoginSubmitButtonClick(loginForm)" novalidate>
+
+    <div class="form-group">
+
+      <label class="center-block">Email:
+      <input class="form-control" 
+              formControlName="email" 
+              required>
+      </label>
+
+      <span class="text-danger" *ngIf="loginForm.get('email').hasError('required') && loginForm.get('email').touched">
+        Email is required
+      </span>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="center-block">Password:
+        <input class="form-control" 
+               formControlName="password" required>
+      </label>
+
+      <span class="text-danger" *ngIf="loginForm.get('password').hasError('required') && loginForm.get('password').touched">
+        Password is required
+      </span>
+      <span class="text-danger" *ngIf="loginForm.get('password').hasError('minlength') && loginForm.get('password').touched">
+        Password must be at least 6 characters
+      </span>
+
+    </div>
+
+    <button class="btn btn-success center-block" type="submit">Login</button>
+    
+    <em>Do not have an account? Click 
+      <span (click)="isNewUser = true" 
+            style="font-weight: bold; cursor: pointer;">
+        here
+      </span> 
+      to create an account
+    </em>
+
+  </form>
+
+  <form *ngIf="isNewUser"
+        [formGroup]="createUserForm" 
+        (ngSubmit)="onCreateUserSubmitButtonClick(createUserForm)" novalidate>
+
+    <div class="form-group">
+
+      <label class="center-block">Email:
+            <input class="form-control" 
+                    formControlName="email" 
+                    required>
+            </label>
+
+      <div class="text-danger" *ngIf="createUserForm.get('email').hasError('required') && createUserForm.get('email').touched">
+        Email is required
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="center-block">Password:
+              <input class="form-control" 
+                     formControlName="password" required>
+            </label>
+
+      <div class="text-danger" *ngIf="createUserForm.get('password').hasError('required') && createUserForm.get('password').touched">
+        Password is required
+      </div>
+
+    </div>
+
+    <button class="btn btn-success center-block" type="submit">Create</button>
+    <em>Have an account? Click 
+      <span (click)="isNewUser = false"
+            style="font-weight: bold; cursor: pointer;">
+            here
+      </span> 
+      to login
+    </em>
+
+  </form>
+
+</div>
