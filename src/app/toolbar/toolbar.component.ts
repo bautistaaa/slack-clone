@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 
-import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { ToolbarService } from './toolbar.service';
 
 import map from 'lodash/map';
 import { Channel } from '../models/Channel';
+import { User } from '../models/User';
 
 @Component({
   selector: 'app-toolbar',
@@ -15,7 +15,7 @@ import { Channel } from '../models/Channel';
   styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
-  user: firebase.User;
+  user: User;
   channels: Channel[] = [];
 
   constructor(
@@ -24,6 +24,8 @@ export class ToolbarComponent implements OnInit {
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService
   ) {
+    console.log('toolbar constructor');
+    
     this._db.list('/channels').$ref.on('value', (snapshot) => {
       const channels = snapshot.val();
       map(channels, (channel, key) => {
@@ -36,7 +38,9 @@ export class ToolbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.user.subscribe(user => {
+    console.log('toolbar oninit');
+    this.authService.currentUser$.subscribe(user => {
+      console.log(user);
       this.user = user;
     });
   }

@@ -6,6 +6,8 @@ import { ToolbarService } from '../toolbar/toolbar.service';
 import { Channel } from '../models/Channel';
 import map from 'lodash/map';
 import { Message } from '../models/Message';
+import { User } from '../models/User';
+import 'rxjs/add/operator/mergeMap';
 
 @Component({
   selector: 'app-chatroom',
@@ -15,7 +17,8 @@ import { Message } from '../models/Message';
 export class ChatroomComponent implements OnInit {
   messages: Message[] = [];
   channel: Channel;
-
+  user: User;
+  
   constructor(
     private _authService: AuthService,
     private _router: Router,
@@ -24,17 +27,22 @@ export class ChatroomComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._toolbarService.currentChannel.subscribe(channel => {
+    this._authService.currentUser$.flatMap(user => {
+      this.user = user;
+      return this._toolbarService.currentChannel
+    }).subscribe(channel => {
       this.channel = channel;
 
-      this._db.list('/messages').$ref.ref.child(this.channel.key).child('/messages').on('value', (snapshot) => {
+      this._db.list(`/messages/${this.channel.key}`).$ref.on('value', (snapshot) => {
         this.messages = [];
         const messages = snapshot.val();
         map(messages, (message, key) => {
           this.messages.push({
+            userId: message.userId,
             message: message.message,
             timestamp: message.timestamp,
-            user: message.user
+            userName: message.userName,
+            photoUrl: message.photoUrl
           });
         });
       });
@@ -47,14 +55,14 @@ export class ChatroomComponent implements OnInit {
 
   onAddMessage(message: string) {
     if (message !== '') {
-      const messages = this._db.list(`/messages/${this.channel.key}/messages`);
-      const userId = this._authService.auth.currentUser.uid;
+      const messages = this._db.list(`/messages/${this.channel.key}`);
 
       messages.push(
         {
-          user: userId,
+          userName: this.user.username,
           message: message,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          photoUrl: this.user.photoUrl
         }
       );
     }

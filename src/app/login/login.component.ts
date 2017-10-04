@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private _formBuider: FormBuilder,
     private _authService: AuthService,
+    private _db: AngularFireDatabase,
     private _router: Router) { }
 
   ngOnInit() {
@@ -29,9 +31,17 @@ export class LoginComponent implements OnInit {
         password: ['', [Validators.required, Validators.minLength(6)]]
       });
     }
+    
+    const newUserBuildGroup = () => {
+      return this._formBuider.group({
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        username: ['', [Validators.required]]
+      });
+    }
     this.loginForm = buildGroup();
 
-    this.createUserForm = buildGroup();
+    this.createUserForm = newUserBuildGroup();
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -58,6 +68,14 @@ export class LoginComponent implements OnInit {
   onCreateUserSubmitButtonClick({ value, valid }: { value: any, valid: boolean }) {
     if (this.createUserForm.valid) {
       this._authService.createUser(value.email, value.password).then(user => {
+        // lets add a user to our firebase db with the key of its userid
+        const usersRef = this._db.list('/users');
+        usersRef.set(user.uid, {
+          email: user.email,
+          photoURL: 'https://placekitten.com/40/40?image=1',
+          username: value.username
+        });
+
         this._router.navigate(['/home']);
       });
     } else {

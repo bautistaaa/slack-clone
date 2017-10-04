@@ -12,11 +12,13 @@
 
     <li class="message" *ngFor="let message of messages">
 
-      <span class="avatar"></span>
+      <div class="avatar">
+        <img src="{{ message.photoUrl }}" alt="">
+      </div>
 
       <div class="message-metadata">
         <span class="user-name">
-          Chris Bautista
+          {{ message.userName}}
         </span>
         <span class="timestamp">
             {{ message.timestamp | date:'medium' }}

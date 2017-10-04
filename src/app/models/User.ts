@@ -1,5 +1,8 @@
+import { Channel } from './Channel';
+
 export class User {
     email: string;
-    password: string;
-    channels: string[];
+    uid: string;
+    photoUrl: string;
+    username: string;
 }
