@@ -7,11 +7,11 @@
         <span class="create-channel-button"
               (click)="onCreateChannelButtonClick()">+</span>
     </h4>
-    
+
     <ul class="channels">
-        <li class="channel" 
-            *ngFor="let channel of channels | async"
-            (click)="onChannelClick(channel.name)">
+        <li class="channel"
+            *ngFor="let channel of channels"
+            (click)="onChannelClick(channel)">
             {{ channel.name }}
         </li>
     </ul>

@@ -2,8 +2,19 @@
     margin-left: 200px;
     padding: 10px 10px 20px;
     height: 100%;
-    position: relative;
     min-height: 100vh;
+}
+
+.chatroom-header {
+  min-height: 49px;
+  border-bottom: 1px solid lightgrey;
+  position: relative;
+
+  h4 {
+    margin: 0;
+    padding: 10px 0 20px 0;
+    font-weight: bold;
+  }
 }
 
 .logout-button {

@@ -38,3 +38,7 @@ export class ChannelComponent implements OnInit {
   }
 
 }
+
+// channels
+//  name
+//

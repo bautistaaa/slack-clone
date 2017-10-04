@@ -1,13 +1,16 @@
 <div class="chatroom">
+  <header class="chatroom-header">
 
-  <h4>#Chatroom Title</h4>
-  <button class="logout-button"
-          (click)="onLogoutButtonClick()">Logout</button>
-  <hr>
+    <h4 *ngIf="channel">{{'#' + channel.name }}</h4>
+    <button class="logout-button" (click)="onLogoutButtonClick()">Logout</button>
+
+  </header>
+
+  <!-- <hr> -->
 
   <ul class="messages">
 
-    <li class="message" *ngFor="let message of messages | async">
+    <li class="message" *ngFor="let message of messages">
 
       <span class="avatar"></span>
 

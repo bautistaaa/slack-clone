@@ -4,6 +4,10 @@ import { AuthService } from '../auth.service';
 import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { ToolbarService } from './toolbar.service';
+
+import map from 'lodash/map';
+import { Channel } from '../models/Channel';
 
 @Component({
   selector: 'app-toolbar',
@@ -12,27 +16,36 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 })
 export class ToolbarComponent implements OnInit {
   user: firebase.User;
-  channels: FirebaseListObservable<any>;
-  
+  channels: Channel[] = [];
+
   constructor(
     public authService: AuthService,
     private _router: Router,
-    private _db: AngularFireDatabase
-  ) { 
-    this.channels = _db.list('/channels');
+    private _db: AngularFireDatabase,
+    private _toolbarService: ToolbarService
+  ) {
+    this._db.list('/channels').$ref.on('value', (snapshot) => {
+      const channels = snapshot.val();
+      map(channels, (channel, key) => {
+        this.channels.push({
+          key,
+          name: channel.name
+        });
+      });
+    });
   }
 
   ngOnInit() {
     this.authService.user.subscribe(user => {
       this.user = user;
-    })
+    });
   }
 
   onCreateChannelButtonClick() {
     this._router.navigate(['/channel']);
   }
 
-  onChannelClick(name: string) {
-    console.log('channel clicked ', name);
+  onChannelClick(channel: Channel) {
+      this._toolbarService.currentChannel.next(channel);
   }
 }
