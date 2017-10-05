@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, Form } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { ToolbarService } from '../toolbar/toolbar.service';
+import { Channel } from '../models/Channel';
 
 @Component({
   selector: 'app-channel',
@@ -12,11 +14,15 @@ export class ChannelComponent implements OnInit {
   createChannelForm: Form;
   name = new FormControl('', [Validators.required]);
   isNewUser = false;
+  channelsRef: FirebaseListObservable<any[]>;
 
   constructor(
     private _router: Router,
-    private _db: AngularFireDatabase
-  ) { }
+    private _db: AngularFireDatabase,
+    private _toolbarService: ToolbarService
+  ) {
+    this.channelsRef = this._db.list('/channels');
+  }
 
   ngOnInit() {
   }
@@ -26,15 +32,19 @@ export class ChannelComponent implements OnInit {
   }
 
   onCreateChannelButtonClick() {
-    const channels = this._db.list('/channels');
-    channels.push(
+    this.channelsRef.push(
       {
-        name: this.name.value,
-        users: []
+        name: this.name.value
       }
-    );
-
-    this._router.navigate(['']);
+    ).then(channel => {
+      let c: Channel = {
+        key: channel.key,
+        name: this.name.value
+      };
+      console.log(c);
+      this._toolbarService.currentChannel.next(c);
+      this._router.navigate(['']);
+    });
   }
 
 }

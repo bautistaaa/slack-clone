@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 import { Channel } from '../models/Channel';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class ToolbarService {
-  currentChannel = new Subject<Channel>();
+  currentChannel = new BehaviorSubject<Channel>(null);
 
   constructor() { }
 

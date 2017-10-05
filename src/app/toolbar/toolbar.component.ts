@@ -24,8 +24,7 @@ export class ToolbarComponent implements OnInit {
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService
   ) {
-    console.log('toolbar constructor');
-    
+
     this._db.list('/channels').$ref.on('value', (snapshot) => {
       const channels = snapshot.val();
       map(channels, (channel, key) => {
@@ -38,9 +37,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('toolbar oninit');
     this.authService.currentUser$.subscribe(user => {
-      console.log(user);
       this.user = user;
     });
   }
@@ -50,6 +47,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   onChannelClick(channel: Channel) {
-      this._toolbarService.currentChannel.next(channel);
+    this._toolbarService.currentChannel.next(channel);
   }
 }

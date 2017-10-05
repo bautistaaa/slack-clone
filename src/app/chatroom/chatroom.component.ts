@@ -8,7 +8,7 @@ import map from 'lodash/map';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
 import 'rxjs/add/operator/mergeMap';
-
+import 'rxjs/add/operator/distinctUntilChanged';
 @Component({
   selector: 'app-chatroom',
   templateUrl: './chatroom.component.html',
@@ -18,7 +18,7 @@ export class ChatroomComponent implements OnInit {
   messages: Message[] = [];
   channel: Channel;
   user: User;
-  
+
   constructor(
     private _authService: AuthService,
     private _router: Router,
@@ -30,22 +30,29 @@ export class ChatroomComponent implements OnInit {
     this._authService.currentUser$.flatMap(user => {
       this.user = user;
       return this._toolbarService.currentChannel
-    }).subscribe(channel => {
-      this.channel = channel;
+    })
+    .distinctUntilChanged()
+    .subscribe(channel => {
+      if (channel) {
+        this.channel = channel;
 
-      this._db.list(`/messages/${this.channel.key}`).$ref.on('value', (snapshot) => {
-        this.messages = [];
-        const messages = snapshot.val();
-        map(messages, (message, key) => {
-          this.messages.push({
-            userId: message.userId,
-            message: message.message,
-            timestamp: message.timestamp,
-            userName: message.userName,
-            photoUrl: message.photoUrl
+        this._db.list(`/messages/${this.channel.key}`).$ref.on('value', (snapshot) => {
+
+          this.messages = [];
+          const messages = snapshot.val();
+
+          map(messages, (message, key) => {
+            this.messages.push({
+              userId: message.userId,
+              message: message.message,
+              timestamp: message.timestamp,
+              userName: message.userName,
+              photoUrl: message.photoUrl
+            });
           });
+
         });
-      });
+      }
     });
   }
 

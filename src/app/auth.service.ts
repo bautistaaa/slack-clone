@@ -18,16 +18,13 @@ export class AuthService {
     private _afAuth: AngularFireAuth,
     private _db: AngularFireDatabase
   ) {
-    console.log('construct auth service')
     this.user = this._afAuth.authState;
     this.auth = this._afAuth.auth;
     this._afAuth.auth.onAuthStateChanged(user => {
-      console.log(user);
       if (user) {
         const userId = user.uid;
-        console.log('query by userid ', userId);
+
         this._db.list(`/users/${userId}`).$ref.on('value', (snapshot) => {
-          console.log(snapshot.val());
           let userSnapshot = snapshot.val();
           let currentUser: User = {
             email: userSnapshot.email,
@@ -35,7 +32,6 @@ export class AuthService {
             username: userSnapshot.username,
             photoUrl: userSnapshot.photoURL
           };
-          console.log('current user info ', currentUser);
 
           this.currentUserSubject.next(currentUser);
         });
