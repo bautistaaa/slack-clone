@@ -24,8 +24,7 @@ export class ToolbarComponent implements OnInit {
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService
   ) {
-
-    this._db.list('/channels').$ref.on('value', (snapshot) => {
+    this._db.list('/channels').$ref.once('value', (snapshot) => {
       const channels = snapshot.val();
       map(channels, (channel, key) => {
         this.channels.push({
@@ -34,6 +33,19 @@ export class ToolbarComponent implements OnInit {
         });
       });
     });
+
+    // hack to only get latest added channel and append to channel list
+    this._db.list('/channels')
+      .$ref
+      .orderByChild('timestamp')
+      .startAt(Date.now())
+      .limitToLast(1)
+      .on('child_added', snapshot => {
+        this.channels.push({
+          key: snapshot.key,
+          name: snapshot.val().name
+        });
+      });
   }
 
   ngOnInit() {

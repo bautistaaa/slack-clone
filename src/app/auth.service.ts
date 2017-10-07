@@ -10,7 +10,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class AuthService {
   user: Observable<firebase.User>;
-  auth: firebase.auth.Auth;
   private currentUserSubject = new BehaviorSubject<User>(null);
   currentUser$: Observable<User> = this.currentUserSubject.asObservable();
 
@@ -19,7 +18,6 @@ export class AuthService {
     private _db: AngularFireDatabase
   ) {
     this.user = this._afAuth.authState;
-    this.auth = this._afAuth.auth;
     this._afAuth.auth.onAuthStateChanged(user => {
       if (user) {
         const userId = user.uid;

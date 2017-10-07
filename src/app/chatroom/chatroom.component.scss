@@ -7,9 +7,9 @@
 }
 
 .chatroom-header {
-  min-height: 49px;
-  border-bottom: 1px solid lightgrey;
-  position: relative;
+    min-height: 49px;
+    border-bottom: 1px solid lightgrey;
+    position: relative;
 
   h4 {
     margin: 0;
@@ -33,6 +33,8 @@ hr {
 .messages {
     list-style: none;
     padding: 0;
+    max-height: 88vh;
+    overflow-y: auto;
     .message {
         margin: 10px 0;
     }

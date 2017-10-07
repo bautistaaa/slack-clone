@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
         password: ['', [Validators.required, Validators.minLength(6)]]
       });
     }
-    
+
     const newUserBuildGroup = () => {
       return this._formBuider.group({
         email: ['', [Validators.required, Validators.email]],
@@ -74,9 +74,7 @@ export class LoginComponent implements OnInit {
           email: user.email,
           photoURL: 'https://placekitten.com/40/40?image=1',
           username: value.username
-        });
-
-        this._router.navigate(['/home']);
+        }).then(() => this._router.navigate(['/home']));
       });
     } else {
       this.validateAllFormFields(this.createUserForm);

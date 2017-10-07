@@ -34,14 +34,15 @@ export class ChannelComponent implements OnInit {
   onCreateChannelButtonClick() {
     this.channelsRef.push(
       {
-        name: this.name.value
+        name: this.name.value,
+        timestamp: Date.now()
       }
     ).then(channel => {
       let c: Channel = {
         key: channel.key,
         name: this.name.value
       };
-      console.log(c);
+
       this._toolbarService.currentChannel.next(c);
       this._router.navigate(['']);
     });
