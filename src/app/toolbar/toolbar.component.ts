@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
@@ -15,11 +14,11 @@ import { User } from '../models/User';
   styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
+  @Input()
   user: User;
   channels: Channel[] = [];
 
   constructor(
-    public authService: AuthService,
     private _router: Router,
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService
@@ -49,9 +48,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.user = user;
-    });
   }
 
   onCreateChannelButtonClick() {
