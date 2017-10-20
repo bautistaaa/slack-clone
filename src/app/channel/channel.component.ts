@@ -38,7 +38,7 @@ export class ChannelComponent implements OnInit {
         timestamp: Date.now()
       }
     ).then(channel => {
-      let c: Channel = {
+      const c: Channel = {
         key: channel.key,
         name: this.name.value
       };

@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]]
       });
-    }
+    };
 
     const newUserBuildGroup = () => {
       return this._formBuider.group({
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
         password: ['', [Validators.required, Validators.minLength(6)]],
         username: ['', [Validators.required]]
       });
-    }
+    };
     this.loginForm = buildGroup();
 
     this.createUserForm = newUserBuildGroup();

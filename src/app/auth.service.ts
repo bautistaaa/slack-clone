@@ -23,8 +23,8 @@ export class AuthService {
         const userId = user.uid;
 
         this._db.list(`/users/${userId}`).$ref.on('value', (snapshot) => {
-          let userSnapshot = snapshot.val();
-          let currentUser: User = {
+          const userSnapshot = snapshot.val();
+          const currentUser: User = {
             email: userSnapshot.email,
             uid: userSnapshot.uid,
             username: userSnapshot.username,
@@ -34,7 +34,7 @@ export class AuthService {
           this.currentUserSubject.next(currentUser);
         });
       }
-    })
+    });
   }
 
   isAuthenticated() {
