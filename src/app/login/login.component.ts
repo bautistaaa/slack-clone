@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
       this._authService.createUser(value.email, value.password).then(user => {
         // lets add a user to our firebase db with the key of its userid
         const usersRef = this._db.list('/users');
-        usersRef.set(user.uid, {
+        usersRef.update(user.uid, {
           email: user.email,
           photoURL: 'https://placekitten.com/40/40?image=1',
           username: value.username
