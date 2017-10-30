@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { ToolbarService } from './toolbar.service';
 
 import map from 'lodash/map';
@@ -23,8 +23,7 @@ export class ToolbarComponent implements OnInit {
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService
   ) {
-    this._db.list('/channels').$ref.once('value', (snapshot) => {
-      const channels = snapshot.val();
+    this._db.object('channels').valueChanges().take(1).subscribe(channels => {
       map(channels, (channel, key) => {
         this.channels.push({
           key,
@@ -34,17 +33,21 @@ export class ToolbarComponent implements OnInit {
     });
 
     // hack to only get latest added channel and append to channel list
-    this._db.list('/channels')
-      .$ref
-      .orderByChild('timestamp')
-      .startAt(Date.now())
-      .limitToLast(1)
-      .on('child_added', snapshot => {
+    this._db.list('/channels', ref => {
+      return ref
+        .orderByChild('timestamp')
+        .startAt(Date.now())
+        .limitToLast(1);
+    })
+    .snapshotChanges()
+    .subscribe(actions => {
+      actions.forEach(action => {
         this.channels.push({
-          key: snapshot.key,
-          name: snapshot.val().name
+          key: action.key,
+          name: action.payload.val().name
         });
       });
+    });
   }
 
   ngOnInit() {

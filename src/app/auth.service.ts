@@ -21,18 +21,18 @@ export class AuthService {
     this._afAuth.auth.onAuthStateChanged(user => {
       if (user) {
         const userId = user.uid;
+        this._db.list<User>(`/users/${userId}`)
+          .valueChanges<any>()
+          .subscribe(userSnapshot => {
+            const currentUser: User = {
+              email: userSnapshot[0],
+              uid: userId,
+              username: userSnapshot[2],
+              photoUrl: userSnapshot[1]
+            };
 
-        this._db.list(`/users/${userId}`).$ref.on('value', (snapshot) => {
-          const userSnapshot = snapshot.val();
-          const currentUser: User = {
-            email: userSnapshot.email,
-            uid: userSnapshot.uid,
-            username: userSnapshot.username,
-            photoUrl: userSnapshot.photoURL
-          };
-
-          this.currentUserSubject.next(currentUser);
-        });
+            this.currentUserSubject.next(currentUser);
+          });
       }
     });
   }

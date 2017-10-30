@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { FirebaseListObservable, AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { ToolbarService } from '../toolbar/toolbar.service';
 import { Channel } from '../models/Channel';
 import map from 'lodash/map';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
-import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/distinctUntilChanged';
+
 @Component({
   selector: 'app-chatroom',
   templateUrl: './chatroom.component.html',
@@ -34,23 +34,21 @@ export class ChatroomComponent implements OnInit {
       .subscribe(channel => {
         if (channel) {
           this.channel = channel;
-
-          this._db.list(`/messages/${this.channel.key}`).$ref.on('value', (snapshot) => {
-
-            this.messages = [];
-            const messages = snapshot.val();
-
-            map(messages, (message, key) => {
-              this.messages.push({
-                userId: message.userId,
-                message: message.message,
-                timestamp: message.timestamp,
-                userName: message.userName,
-                photoUrl: message.photoUrl
+          this._db.list(`/messages/${this.channel.key}`)
+            .snapshotChanges()
+            .subscribe(actions => {
+              this.messages = [];
+              actions.forEach(action => {
+                const payload = action.payload.val();
+                this.messages.push({
+                  userId: payload.userId,
+                  message: payload.message,
+                  timestamp: payload.timestamp,
+                  userName: payload.userName,
+                  photoUrl: payload.photoUrl
+                });
               });
             });
-
-          });
         }
       });
   }
@@ -74,10 +72,3 @@ export class ChatroomComponent implements OnInit {
     }
   }
 }
-
-// messages
-//   channel
-//     messageId
-//       user
-//       message
-//       timestamp

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, Form } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { ToolbarService } from '../toolbar/toolbar.service';
 import { Channel } from '../models/Channel';
 
@@ -14,7 +14,7 @@ export class ChannelComponent implements OnInit {
   createChannelForm: Form;
   name = new FormControl('', [Validators.required]);
   isNewUser = false;
-  channelsRef: FirebaseListObservable<any[]>;
+  channelsRef: AngularFireList<Channel>;
 
   constructor(
     private _router: Router,
@@ -49,7 +49,3 @@ export class ChannelComponent implements OnInit {
   }
 
 }
-
-// channels
-//  name
-//
