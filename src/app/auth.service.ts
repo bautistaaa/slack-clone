@@ -6,13 +6,15 @@ import * as firebase from 'firebase/app';
 import { User } from './models/User';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class AuthService {
   user: Observable<firebase.User>;
   private currentUserSubject = new BehaviorSubject<User>(null);
   currentUser$: Observable<User> = this.currentUserSubject.asObservable();
-
+  subscription: Subscription
+  ;
   constructor(
     private _afAuth: AngularFireAuth,
     private _db: AngularFireDatabase
@@ -21,7 +23,7 @@ export class AuthService {
     this._afAuth.auth.onAuthStateChanged(user => {
       if (user) {
         const userId = user.uid;
-        this._db.list<User>(`/users/${userId}`)
+        this.subscription = this._db.list<User>(`/users/${userId}`)
           .valueChanges<any>()
           .subscribe(userSnapshot => {
             const currentUser: User = {
@@ -50,6 +52,7 @@ export class AuthService {
   }
 
   logout() {
+    this.subscription.unsubscribe();
     return this._afAuth.auth.signOut();
   }
 }
