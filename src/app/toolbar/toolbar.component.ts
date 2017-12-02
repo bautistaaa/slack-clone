@@ -5,6 +5,7 @@ import { Channel } from '../models/Channel';
 import map from 'lodash/map';
 import { ToolbarService } from './toolbar.service';
 import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
@@ -19,7 +20,8 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private _db: AngularFireDatabase,
     private _toolbarService: ToolbarService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _router: Router
   ) { }
 
   ngOnInit() {
@@ -56,4 +58,7 @@ export class ToolbarComponent implements OnInit {
     this._toolbarService.selectChannel(channel);
   }
 
+  onCreateChannelButtonClick() {
+    this._router.navigate(['/channel']);
+  }
 }
