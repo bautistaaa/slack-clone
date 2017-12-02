@@ -1,30 +1,30 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-
-import { Router } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
-import { ToolbarService } from './toolbar.service';
-
-import map from 'lodash/map';
-import { Channel } from '../models/Channel';
 import { User } from '../models/User';
-import { Subscription } from 'rxjs/Subscription';
+import { Channel } from '../models/Channel';
+import map from 'lodash/map';
+import { ToolbarService } from './toolbar.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent implements OnInit, OnDestroy {
+export class ToolbarComponent implements OnInit {
   @Input()
   user: User;
   channels: Channel[] = [];
-  subscription: Subscription;
+
   constructor(
-    private _router: Router,
     private _db: AngularFireDatabase,
-    private _toolbarService: ToolbarService
-  ) {
+    private _toolbarService: ToolbarService,
+    private _authService: AuthService
+  ) { }
+
+  ngOnInit() {
     this._db.object('channels').valueChanges().take(1).subscribe(channels => {
+      // map over channels and push to our channels array that populates the sidebar
       map(channels, (channel, key) => {
         this.channels.push({
           key,
@@ -34,35 +34,26 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     });
 
     // hack to only get latest added channel and append to channel list
-    this.subscription = this._db.list('/channels', ref => {
+    this._db.list('/channels', ref => {
       return ref
         .orderByChild('timestamp')
         .startAt(Date.now())
         .limitToLast(1);
     })
-      .snapshotChanges()
-      .subscribe(actions => {
-        actions.forEach(action => {
-          this.channels.push({
-            key: action.key,
-            name: action.payload.val().name
-          });
+    .snapshotChanges()
+    .takeUntil(this._authService.loggedOut$)
+    .subscribe(channels => {
+      channels.forEach(channel => {
+        this.channels.push({
+          key: channel.key,
+          name: channel.payload.val().name
         });
       });
-  }
-
-  ngOnInit() {
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  onCreateChannelButtonClick() {
-    this._router.navigate(['/channel']);
+    });
   }
 
   onChannelClick(channel: Channel) {
-    this._toolbarService.currentChannel.next(channel);
+    this._toolbarService.selectChannel(channel);
   }
+
 }

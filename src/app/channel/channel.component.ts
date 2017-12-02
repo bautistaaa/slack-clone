@@ -43,7 +43,7 @@ export class ChannelComponent implements OnInit {
         name: this.name.value
       };
 
-      this._toolbarService.currentChannel.next(c);
+      this._toolbarService.currentChannel$.next(c);
       this._router.navigate(['']);
     });
   }
